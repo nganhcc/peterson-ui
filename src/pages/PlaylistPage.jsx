@@ -13,6 +13,7 @@ import Sidebar from "../components/layout/Sidebar";
 import CreatePlaylistModal from "../components/modals/CreatePlaylistModal";
 import DeletePlaylistModal from "../components/modals/DeletePlaylistModal";
 
+// Thêm thuộc tính thumbnail sinh ảnh ngẫu nhiên từ picsum
 const initialPlaylists = Array.from({ length: 6 }, (_, index) => ({
   id: index + 1,
   title: `Danh sách phát ${index + 1}`,
@@ -20,8 +21,9 @@ const initialPlaylists = Array.from({ length: 6 }, (_, index) => ({
   type: "Danh sách phát",
   visibility: "Riêng tư",
   updatedAt: "25 thg 5, 2026",
-  videoCount: Math.floor(Math.random() * 20) + 5, // Sinh số lượng video ngẫu nhiên từ 5 đến 24
-  views: 4,
+  videoCount: Math.floor(Math.random() * 20) + 5,
+  views: Math.floor(Math.random() * 100) + 10,
+  thumbnail: `https://picsum.photos/seed/playlist_thumb_${index + 1}/124/72`,
 }));
 
 const smallActionButtonClass =
@@ -42,9 +44,11 @@ export default function PlaylistPage({ activeItem = "playlists", onNavigate }) {
       public: "Công khai",
     }[nextPlaylist.visibility];
 
+    const newId = Date.now();
+
     setPlaylists((currentPlaylists) => [
       {
-        id: Date.now(),
+        id: newId,
         title,
         subtitle: nextPlaylist.description.trim() || "Chưa có mô tả",
         type: "Danh sách phát",
@@ -52,6 +56,8 @@ export default function PlaylistPage({ activeItem = "playlists", onNavigate }) {
         updatedAt: "16 thg 6, 2026",
         videoCount: 0,
         views: 0,
+        // Cấp ảnh ngẫu nhiên cho danh sách phát mới tạo
+        thumbnail: `https://picsum.photos/seed/playlist_new_${newId}/124/72`,
       },
       ...currentPlaylists,
     ]);
@@ -103,8 +109,9 @@ export default function PlaylistPage({ activeItem = "playlists", onNavigate }) {
                   className="grid min-h-[116px] grid-cols-[minmax(300px,1fr)_110px_150px_170px_130px_90px] items-center gap-5 max-2xl:grid-cols-[minmax(280px,1fr)_100px_135px_155px_115px_80px] max-2xl:gap-4 max-xl:grid-cols-1 max-xl:gap-4 max-xl:border-b max-xl:border-[#303030] max-xl:py-6 max-xl:last:border-b-0"
                 >
                   <div className="flex min-w-0 items-center gap-4 max-sm:flex-col max-sm:items-start">
-                    <div className="relative h-[72px] w-[124px] shrink-0 overflow-hidden rounded-[10px] max-sm:h-auto max-sm:w-full max-sm:aspect-video">
-                      <span className="art-mountain-thumb absolute inset-0" aria-hidden="true" />
+                    <div className="relative h-[72px] w-[124px] shrink-0 overflow-hidden rounded-[10px] bg-[#333] max-sm:h-auto max-sm:w-full max-sm:aspect-video">
+                      {/* Dùng thẻ img để hiển thị ảnh thật được sinh ngẫu nhiên */}
+                      <img src={playlist.thumbnail} alt={playlist.title} className="absolute inset-0 h-full w-full object-cover" />
                       <span className="absolute inset-y-0 right-0 flex w-[42px] flex-col items-center justify-center gap-1 bg-black/55 text-xs font-black text-white">
                         <span>{playlist.videoCount}</span>
                         <ListVideo size={16} aria-hidden="true" />
@@ -118,7 +125,6 @@ export default function PlaylistPage({ activeItem = "playlists", onNavigate }) {
                         <button
                           type="button"
                           className={smallActionButtonClass}
-                          
                           onClick={() => onNavigate?.("editPlaylist", playlist)}
                         >
                           Chỉnh
@@ -128,7 +134,6 @@ export default function PlaylistPage({ activeItem = "playlists", onNavigate }) {
                         <button
                           type="button"
                           className={smallActionButtonClass}
-                          
                           onClick={() => onNavigate?.("playlistVideos", playlist)}
                         >
                           Xem
@@ -171,7 +176,37 @@ export default function PlaylistPage({ activeItem = "playlists", onNavigate }) {
               ))}
             </div>
           </div>
-          {/* ... Phần footer phân trang giữ nguyên ... */}
+
+          <footer className="mt-5 flex items-center justify-end gap-10 pr-9 text-[22px] text-[#cfcfcf] max-lg:flex-wrap max-lg:justify-start max-lg:gap-5 max-lg:pr-0 max-md:text-base">
+            <label className="flex items-center gap-1.5">
+              <span>Số hàng mỗi trang:</span>
+              <select
+                defaultValue="10"
+                aria-label="Số hàng mỗi trang"
+                className="rounded border-0 bg-transparent py-1 pr-1 text-[#cfcfcf] outline-none"
+              >
+                <option value="10" className="bg-[#1f1f1f]">10</option>
+                <option value="25" className="bg-[#1f1f1f]">25</option>
+              </select>
+            </label>
+
+            <span>1-6/nhiều kết quả</span>
+
+            <nav className="flex items-center gap-1" aria-label="Phân trang danh sách phát">
+              <button type="button" className={pageButtonClass} aria-label="Trang đầu">
+                <ChevronsLeft size={18} aria-hidden="true" />
+              </button>
+              <button type="button" className={pageButtonClass} aria-label="Trang trước">
+                <ChevronLeft size={18} aria-hidden="true" />
+              </button>
+              <button type="button" className={pageButtonClass} aria-label="Trang sau">
+                <ChevronRight size={18} aria-hidden="true" />
+              </button>
+              <button type="button" className={pageButtonClass} aria-label="Trang cuối">
+                <ChevronsRight size={18} aria-hidden="true" />
+              </button>
+            </nav>
+          </footer>
         </section>
       </main>
 
