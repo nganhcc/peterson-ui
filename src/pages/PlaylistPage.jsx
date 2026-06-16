@@ -158,7 +158,7 @@ export default function PlaylistPage({ activeItem = "playlists", onNavigate }) {
                   <span className="inline-flex items-center gap-2 text-[22px] text-[#d0d0d0] max-xl:text-base">
                     <span className="hidden text-sm font-semibold text-[#8f8f8f] uppercase max-xl:mb-1 max-xl:block">Chế độ hiển thị</span>
                     {playlist.visibility}
-                    <ChevronDown size={16} className="text-[#777]" aria-hidden="true" />
+                    {/* <ChevronDown size={16} className="text-[#777]" aria-hidden="true" /> */}
                   </span>
                   <span className="text-[22px] text-[#d0d0d0] max-xl:text-base">
                     <span className="hidden text-sm font-semibold text-[#8f8f8f] uppercase max-xl:mb-1 max-xl:block">Lần cập nhật gần nhất</span>

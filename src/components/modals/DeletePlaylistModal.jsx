@@ -45,7 +45,7 @@ export default function DeletePlaylistModal({
           Hành động này không thể hoàn tác và sẽ gỡ bỏ nhóm video này khỏi kênh của bạn.
         </p>
 
-        <div className="mt-[30px] flex gap-3 border-t border-[#242424] pt-4 max-sm:flex-col-reverse">
+        <div className="mt-[30px] flex gap-3 border-t justify-end border-[#242424] pt-4 max-sm:flex-col-reverse">
           <button
             type="button"
             className={`${actionButtonClass} min-w-[70px] border border-zinc-700 bg-transparent text-[#f3f3f3] hover:bg-white/10`}
