@@ -15,13 +15,51 @@ import EditCommentModal from "../components/modals/EditCommentModal";
 import ReplyCommentModal from "../components/modals/ReplyCommentModal";
 import SaveVideoModal from "../components/modals/SaveVideoModal";
 
-const recommendedVideos = Array.from({ length: 8 }, (_, index) => ({
-  id: index + 1,
-  title: "Obito - Hà Nội ft. VSTRA",
-  channel: "Obito Official",
-  meta: "Obito - Hà Nội ft. VSTRA Download.",
-  duration: "2:46",
-}));
+// 1. Hàm sinh dữ liệu video đề xuất ngẫu nhiên và duy nhất
+const generateUniqueRecommendedVideos = (count) => {
+  const titles = [
+    "Khóa học ReactJS từ cơ bản đến nâng cao",
+    "Node.js & Express - Xây dựng REST API",
+    "Lộ trình học Frontend 2026",
+    "Tailwind CSS Crash Course",
+    "Spring Boot Microservices",
+    "Docker & Kubernetes cho người mới",
+    "Cấu trúc dữ liệu và giải thuật trong Java",
+    "Next.js App Router toàn tập",
+    "TypeScript thực chiến",
+    "Làm chủ Git và GitHub",
+    "Học Python cho Data Science",
+    "Design Patterns trong phần mềm",
+    "AWS Certified Cloud Practitioner",
+    "Kiến trúc phần mềm: Monolith vs Microservices",
+    "Xây dựng ứng dụng Fullstack với MERN"
+  ];
+  
+  const channels = [
+    "F8 Official", "Hỏi Dân IT", "Evondev", "Nix Education",
+    "Tech Master", "Code Dạo", "Easy Frontend", "Backend Hero"
+  ];
+
+  // Xáo trộn mảng để dữ liệu lấy ra không bị trùng
+  const shuffledIndices = Array.from({ length: titles.length }, (_, i) => i).sort(() => 0.5 - Math.random());
+
+  return Array.from({ length: Math.min(count, titles.length) }, (_, i) => {
+    const idx = shuffledIndices[i];
+    const channel = channels[Math.floor(Math.random() * channels.length)];
+    const views = Math.floor(Math.random() * 500) + 10;
+    const months = Math.floor(Math.random() * 11) + 1;
+    
+    return {
+      id: i + 1,
+      title: titles[idx],
+      channel: channel,
+      meta: `${views} N lượt xem • ${months} tháng trước`,
+      duration: `${Math.floor(Math.random() * 15) + 5}:${Math.floor(Math.random() * 50) + 10}`,
+      // Sinh ảnh ngẫu nhiên từ picsum dựa trên ID
+      thumbnail: `https://picsum.photos/seed/rec_vid_${idx}/128/72`
+    };
+  });
+};
 
 const initialComments = [
   {
@@ -60,7 +98,7 @@ function formatCommentCount(comments) {
   return comments.length + replyCount;
 }
 
-// Hàm hỗ trợ tính toán thay đổi số lượng like/dislike
+// Hàm hỗ trợ tính toán thay đổi số lượng like/dislike cho comment
 function applyReaction(item, reaction) {
   const wasLiked = item.liked;
   const wasDisliked = item.disliked;
@@ -76,7 +114,7 @@ function applyReaction(item, reaction) {
   };
 }
 
-// Component dùng chung cho thanh hành động của cả comment cha và con
+// 2. Component dùng chung cho thanh hành động của cả comment cha và con
 function CommentActions({ item, onReact, onReply, onEdit, onDelete }) {
   return (
     <div className="mt-2 flex flex-wrap items-center gap-1">
@@ -167,6 +205,9 @@ export default function WatchVideoPage({ activeItem = "home", onNavigate }) {
   const [editingComment, setEditingComment] = useState(null);
   const [deletingComment, setDeletingComment] = useState(null);
 
+  // Sinh 12 video đề xuất ngẫu nhiên
+  const [recommendedVideos] = useState(() => generateUniqueRecommendedVideos(12));
+
   const commentCount = useMemo(() => formatCommentCount(comments), [comments]);
 
   // Cập nhật reaction cho cả cha lẫn con
@@ -215,7 +256,6 @@ export default function WatchVideoPage({ activeItem = "home", onNavigate }) {
 
     setComments((currentComments) =>
       currentComments.map((comment) => {
-        // Kiểm tra xem có đang trả lời chính bình luận này hoặc trả lời một bình luận con của nó không
         const isTarget =
           comment.id === replyingComment.id ||
           comment.replies.some((r) => r.id === replyingComment.id);
@@ -416,6 +456,7 @@ export default function WatchVideoPage({ activeItem = "home", onNavigate }) {
             </section>
           </section>
 
+          {/* 3. Phần Video đề xuất đã được cập nhật */}
           <aside className="min-w-0" aria-label="Video đề xuất">
             <h2 className="mb-6 text-3xl font-black text-white max-xl:text-2xl">Dành cho bạn</h2>
             <div className="space-y-5">
@@ -426,7 +467,9 @@ export default function WatchVideoPage({ activeItem = "home", onNavigate }) {
                   className="grid w-full grid-cols-[128px_minmax(0,1fr)] gap-3 border-0 bg-transparent p-0 text-left text-[#f1f1f1] hover:opacity-90 max-sm:grid-cols-[112px_minmax(0,1fr)]"
                   onClick={() => onNavigate?.("watchVideo")}
                 >
-                  <span className="art-sakura-thumb relative aspect-video overflow-hidden rounded-[10px]">
+                  <span className="relative aspect-video overflow-hidden rounded-[10px] bg-[#333]">
+                    {/* Sử dụng thẻ img để load ảnh thật */}
+                    <img src={video.thumbnail} alt={video.title} className="absolute inset-0 h-full w-full object-cover" />
                     <span className="absolute right-1 bottom-1 rounded-[3px] bg-black/80 px-1.5 py-0.5 text-[11px] text-white">
                       {video.duration}
                     </span>
