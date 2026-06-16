@@ -60,23 +60,58 @@ function formatCommentCount(comments) {
   return comments.length + replyCount;
 }
 
-function updateCommentReaction(comments, commentId, reaction) {
-  return comments.map((comment) => {
-    if (comment.id !== commentId) return comment;
+// Hàm hỗ trợ tính toán thay đổi số lượng like/dislike
+function applyReaction(item, reaction) {
+  const wasLiked = item.liked;
+  const wasDisliked = item.disliked;
+  const nextLiked = reaction === "like" ? !wasLiked : false;
+  const nextDisliked = reaction === "dislike" ? !wasDisliked : false;
 
-    const wasLiked = comment.liked;
-    const wasDisliked = comment.disliked;
-    const nextLiked = reaction === "like" ? !wasLiked : false;
-    const nextDisliked = reaction === "dislike" ? !wasDisliked : false;
+  return {
+    ...item,
+    liked: nextLiked,
+    disliked: nextDisliked,
+    likes: item.likes + (nextLiked ? 1 : 0) - (wasLiked ? 1 : 0),
+    dislikes: item.dislikes + (nextDisliked ? 1 : 0) - (wasDisliked ? 1 : 0),
+  };
+}
 
-    return {
-      ...comment,
-      liked: nextLiked,
-      disliked: nextDisliked,
-      likes: comment.likes + (nextLiked ? 1 : 0) - (wasLiked ? 1 : 0),
-      dislikes: comment.dislikes + (nextDisliked ? 1 : 0) - (wasDisliked ? 1 : 0),
-    };
-  });
+// Component dùng chung cho thanh hành động của cả comment cha và con
+function CommentActions({ item, onReact, onReply, onEdit, onDelete }) {
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-1">
+      <button
+        type="button"
+        className={`inline-flex min-h-7 items-center gap-1 rounded-full px-2 text-xs hover:bg-[#303030] ${
+          item.liked ? "font-black text-white" : "text-[#d8d8d8]"
+        }`}
+        onClick={() => onReact(item.id, "like")}
+        aria-label="Thích bình luận"
+      >
+        <ThumbsUp size={14} fill={item.liked ? "currentColor" : "none"} aria-hidden="true" />
+        <span>{item.likes}</span>
+      </button>
+      <button
+        type="button"
+        className={`inline-flex min-h-7 items-center gap-1 rounded-full px-2 text-xs hover:bg-[#303030] ${
+          item.disliked ? "font-black text-white" : "text-[#d8d8d8]"
+        }`}
+        onClick={() => onReact(item.id, "dislike")}
+        aria-label="Không thích bình luận"
+      >
+        <ThumbsDown size={14} fill={item.disliked ? "currentColor" : "none"} aria-hidden="true" />
+      </button>
+      <button type="button" className={commentTextButton} onClick={() => onReply(item)}>
+        Trả lời
+      </button>
+      <button type="button" className={commentTextButton} onClick={() => onEdit(item)}>
+        Sửa
+      </button>
+      <button type="button" className={commentTextButton} onClick={() => onDelete(item)}>
+        Xóa
+      </button>
+    </div>
+  );
 }
 
 function CommentItem({ comment, onReact, onReply, onEdit, onDelete }) {
@@ -84,6 +119,7 @@ function CommentItem({ comment, onReact, onReply, onEdit, onDelete }) {
     <article className="flex gap-3">
       <UserCircle className="mt-0.5 shrink-0 text-[#d8dde6]" size={34} aria-hidden="true" />
       <div className="min-w-0 flex-1">
+        {/* Nội dung bình luận cha */}
         <div className="mb-1 flex flex-wrap items-center gap-2">
           <strong className="text-sm font-extrabold text-white">{comment.author}</strong>
           <span className="text-xs text-[#a8a8a8]">{comment.time}</span>
@@ -91,50 +127,25 @@ function CommentItem({ comment, onReact, onReply, onEdit, onDelete }) {
         </div>
         <p className="m-0 text-sm leading-relaxed text-[#ededed]">{comment.text}</p>
 
-        <div className="mt-2 flex flex-wrap items-center gap-1">
-          <button
-            type="button"
-            className={`inline-flex min-h-7 items-center gap-1 rounded-full px-2 text-xs hover:bg-[#303030] ${
-              comment.liked ? "font-black text-white" : "text-[#d8d8d8]"
-            }`}
-            onClick={() => onReact(comment.id, "like")}
-            aria-label="Thích bình luận"
-          >
-            <ThumbsUp size={14} fill={comment.liked ? "currentColor" : "none"} aria-hidden="true" />
-            <span>{comment.likes}</span>
-          </button>
-          <button
-            type="button"
-            className={`inline-flex min-h-7 items-center gap-1 rounded-full px-2 text-xs hover:bg-[#303030] ${
-              comment.disliked ? "font-black text-white" : "text-[#d8d8d8]"
-            }`}
-            onClick={() => onReact(comment.id, "dislike")}
-            aria-label="Không thích bình luận"
-          >
-            <ThumbsDown size={14} fill={comment.disliked ? "currentColor" : "none"} aria-hidden="true" />
-          </button>
-          <button type="button" className={commentTextButton} onClick={() => onReply(comment)}>
-            Trả lời
-          </button>
-          <button type="button" className={commentTextButton} onClick={() => onEdit(comment)}>
-            Sửa
-          </button>
-          <button type="button" className={commentTextButton} onClick={() => onDelete(comment)}>
-            Xóa
-          </button>
-        </div>
+        {/* Thanh hành động bình luận cha */}
+        <CommentActions item={comment} onReact={onReact} onReply={onReply} onEdit={onEdit} onDelete={onDelete} />
 
+        {/* Danh sách bình luận con */}
         {comment.replies.length > 0 && (
-          <div className="mt-3 space-y-3 border-l border-[#363636] pl-4">
+          <div className="mt-3 space-y-4 border-l border-[#363636] pl-4">
             {comment.replies.map((reply) => (
               <div key={reply.id} className="flex gap-2">
                 <UserCircle className="mt-0.5 shrink-0 text-[#d8dde6]" size={26} aria-hidden="true" />
-                <div>
+                <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <strong className="text-xs font-extrabold text-white">{reply.author}</strong>
                     <span className="text-[11px] text-[#a8a8a8]">{reply.time}</span>
+                    {reply.edited && <span className="text-[11px] text-[#9f9f9f]">đã chỉnh sửa</span>}
                   </div>
                   <p className="m-0 mt-1 text-sm leading-relaxed text-[#e5e5e5]">{reply.text}</p>
+                  
+                  {/* Thanh hành động bình luận con */}
+                  <CommentActions item={reply} onReact={onReact} onReply={onReply} onEdit={onEdit} onDelete={onDelete} />
                 </div>
               </div>
             ))}
@@ -157,6 +168,23 @@ export default function WatchVideoPage({ activeItem = "home", onNavigate }) {
   const [deletingComment, setDeletingComment] = useState(null);
 
   const commentCount = useMemo(() => formatCommentCount(comments), [comments]);
+
+  // Cập nhật reaction cho cả cha lẫn con
+  function updateCommentReaction(commentId, reaction) {
+    setComments((currentComments) =>
+      currentComments.map((comment) => {
+        if (comment.id === commentId) {
+          return applyReaction(comment, reaction);
+        }
+        return {
+          ...comment,
+          replies: comment.replies.map((reply) =>
+            reply.id === commentId ? applyReaction(reply, reaction) : reply
+          ),
+        };
+      })
+    );
+  }
 
   function handlePublishComment(event) {
     event.preventDefault();
@@ -186,22 +214,33 @@ export default function WatchVideoPage({ activeItem = "home", onNavigate }) {
     if (!trimmedReply || !replyingComment) return;
 
     setComments((currentComments) =>
-      currentComments.map((comment) =>
-        comment.id === replyingComment.id
-          ? {
-              ...comment,
-              replies: [
-                ...comment.replies,
-                {
-                  id: Date.now(),
-                  author: "Bạn",
-                  time: "vừa xong",
-                  text: trimmedReply,
-                },
-              ],
-            }
-          : comment,
-      ),
+      currentComments.map((comment) => {
+        // Kiểm tra xem có đang trả lời chính bình luận này hoặc trả lời một bình luận con của nó không
+        const isTarget =
+          comment.id === replyingComment.id ||
+          comment.replies.some((r) => r.id === replyingComment.id);
+
+        if (isTarget) {
+          return {
+            ...comment,
+            replies: [
+              ...comment.replies,
+              {
+                id: Date.now(),
+                author: "Bạn",
+                time: "vừa xong",
+                text: trimmedReply,
+                likes: 0,
+                dislikes: 0,
+                liked: false,
+                disliked: false,
+                edited: false,
+              },
+            ],
+          };
+        }
+        return comment;
+      })
     );
     setReplyingComment(null);
   }
@@ -211,22 +250,33 @@ export default function WatchVideoPage({ activeItem = "home", onNavigate }) {
     if (!trimmedText || !editingComment) return;
 
     setComments((currentComments) =>
-      currentComments.map((comment) =>
-        comment.id === editingComment.id
-          ? {
-              ...comment,
-              text: trimmedText,
-              edited: true,
-            }
-          : comment,
-      ),
+      currentComments.map((comment) => {
+        if (comment.id === editingComment.id) {
+          return { ...comment, text: trimmedText, edited: true };
+        }
+        return {
+          ...comment,
+          replies: comment.replies.map((reply) =>
+            reply.id === editingComment.id
+              ? { ...reply, text: trimmedText, edited: true }
+              : reply
+          ),
+        };
+      })
     );
     setEditingComment(null);
   }
 
   function handleDeleteComment() {
     if (!deletingComment) return;
-    setComments((currentComments) => currentComments.filter((comment) => comment.id !== deletingComment.id));
+    setComments((currentComments) =>
+      currentComments
+        .filter((comment) => comment.id !== deletingComment.id)
+        .map((comment) => ({
+          ...comment,
+          replies: comment.replies.filter((reply) => reply.id !== deletingComment.id),
+        }))
+    );
     setDeletingComment(null);
   }
 
@@ -356,7 +406,7 @@ export default function WatchVideoPage({ activeItem = "home", onNavigate }) {
                   <CommentItem
                     key={comment.id}
                     comment={comment}
-                    onReact={(commentId, reaction) => setComments((currentComments) => updateCommentReaction(currentComments, commentId, reaction))}
+                    onReact={updateCommentReaction}
                     onReply={setReplyingComment}
                     onEdit={setEditingComment}
                     onDelete={setDeletingComment}

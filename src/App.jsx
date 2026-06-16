@@ -15,8 +15,10 @@ import WatchVideoPage from "./pages/WatchVideoPage";
 
 export default function App() {
   const [page, setPage] = useState("home");
+  
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
 
-  function handleNavigate(nextPage) {
+  function handleNavigate(nextPage, data) {
     if (
       [
         "home",
@@ -34,6 +36,10 @@ export default function App() {
         "playlistVideos",
       ].includes(nextPage)
     ) {
+      
+      if (data) {
+        setSelectedPlaylist(data);
+      }
       setPage(nextPage);
     }
   }
@@ -63,11 +69,11 @@ export default function App() {
   }
 
   if (page === "editPlaylist") {
-    return <EditPlaylistPage onNavigate={handleNavigate} />;
+    return <EditPlaylistPage onNavigate={handleNavigate} playlist={selectedPlaylist}/>;
   }
 
   if (page === "playlistVideos") {
-    return <PlaylistVideosPage onNavigate={handleNavigate} />;
+    return <PlaylistVideosPage onNavigate={handleNavigate} playlist={selectedPlaylist} />;
   }
 
   if (page === "profile") {
