@@ -55,7 +55,7 @@ export default function DeletePlaylistModal({
           </button>
           <button
             type="button"
-            className={`${actionButtonClass} border-0 bg-[#c70e19] text-white shadow-[0_8px_22px_rgba(199,14,25,0.28)] hover:bg-[#a90c15]`}
+            className={`${actionButtonClass} border-0 bg-[#c70e19] text-white shadow-[0_8px_22px_rgba(199,14,25,0.28)] hover:bg-[#a90c15]` }
             onClick={onConfirm}
           >
             Xác nhận xóa
