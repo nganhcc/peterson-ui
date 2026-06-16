@@ -4,6 +4,7 @@ import EditVideoPage from "./pages/EditVideoPage";
 import PlaylistDetailPage from "./pages/PlaylistDetailPage";
 import PlaylistManagementPage from "./pages/PlaylistManagementPage";
 import StatisticsPage from "./pages/StatisticsPage";
+import SubscribedChannelsPage from "./pages/SubscribedChannelsPage";
 import UploadVideoPage from "./pages/UploadVideoPage";
 import VideoManagementPage from "./pages/VideoManagementPage";
 
@@ -12,10 +13,14 @@ export default function App() {
   const [selectedPlaylist, setSelectedPlaylist] = useState(null);
 
   function handleNavigate(nextPage, data) {
-    if (["profile", "statistics", "manageVideos", "uploadVideo", "editVideo", "playlists", "playlistDetail"].includes(nextPage)) {
+    if (["profile", "statistics", "manageVideos", "uploadVideo", "editVideo", "playlists", "playlistDetail", "subscriptions"].includes(nextPage)) {
       if (data) setSelectedPlaylist(data);
       setPage(nextPage);
     }
+  }
+
+  if (page === "subscriptions") {
+    return <SubscribedChannelsPage activeItem={page} onNavigate={handleNavigate} />;
   }
 
   if (page === "profile") {
