@@ -1,67 +1,49 @@
+import { useState } from "react";
 import { BadgeCheck, Gamepad2, Radio, Trophy, UserCircle } from "lucide-react";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 
-const subscribedChannels = [
-  {
-    id: 1,
-    name: "PeterSon",
-    handle: "@sondinhtuan",
-    subscribers: "81,8 N người đăng ký",
-    description: "Tôi tập bắn súng Roblox cho mọi người đã theo dõi và ủng hộ! Follow các social khác tại đây...",
-    avatar: "person",
-  },
-  {
-    id: 2,
-    name: "TUI TÊN SƠN",
-    handle: "@TUITENSON",
-    subscribers: "2,21 Tr người đăng ký",
-    description: "Kênh livestream chơi game và chém gió...",
-    avatar: "person",
-    verified: true,
-  },
-  {
-    id: 3,
-    name: "Cúp Học Xem Bóng",
-    handle: "@CupHocXemBong",
-    subscribers: "13,6 N người đăng ký",
-    description: "Bê cúp học, lớn làm video phân tích bóng đá! Nếu các bạn đã chán xem nội dung thể thao kiểu truyền thống...",
-    avatar: "football",
-  },
-  {
-    id: 4,
-    name: "Spiderum",
-    handle: "@Spiderum",
-    subscribers: "1,19 Tr người đăng ký",
-    description: "Kênh Youtube chính thức của Spiderum - cộng đồng viết với tên gọi thân thương 'Động Nhện' - địa bàn hoạt động của gần 200.000 thành viên...",
-    avatar: "dark",
-    verified: true,
-  },
-  {
-    id: 5,
-    name: "HLV Online nhưng rất hoài niệm",
-    handle: "@HLVOnlineClassic",
-    subscribers: "31,8 N người đăng ký",
-    description: "Vẫn là Huấn luyện viên Online, nhưng ở đây chúng tôi chỉ làm video về những đội bóng/cầu thủ xưa cũ.",
-    avatar: "game",
-  },
-  {
-    id: 6,
-    name: "PeterSon",
-    handle: "@sondinhtuan",
-    subscribers: "81,8 N người đăng ký",
-    description: "Tôi tập bắn súng Roblox cho mọi người đã theo dõi và ủng hộ! Follow các social khác tại đây...",
-    avatar: "person",
-  },
-  {
-    id: 7,
-    name: "PeterSon",
-    handle: "@sondinhtuan",
-    subscribers: "81,8 N người đăng ký",
-    description: "Tôi tập bắn súng Roblox cho mọi người đã theo dõi và ủng hộ! Follow các social khác tại đây...",
-    avatar: "person",
-  },
-];
+// Hàm sinh dữ liệu kênh ngẫu nhiên và duy nhất
+const generateUniqueChannels = (count) => {
+  const names = [
+    "PeterSon", "TUI TÊN SƠN", "Cúp Học Xem Bóng", "Spiderum", 
+    "HLV Online nhưng rất hoài niệm", "MixiGaming", "F8 Official", 
+    "Hỏi Dân IT", "Evondev", "Nix Education", "Schannel", 
+    "Vật Vờ Studio", "Phê Phim", "Ghiền Bóng Đá"
+  ];
+  
+  const avatars = ["person", "football", "dark", "game"];
+  
+  const descriptions = [
+    "Tôi tập bắn súng Roblox cho mọi người đã theo dõi và ủng hộ! Follow các social khác tại đây...",
+    "Kênh livestream chơi game và chém gió...",
+    "Bê cúp học, lớn làm video phân tích bóng đá! Nếu các bạn đã chán xem nội dung thể thao kiểu truyền thống...",
+    "Kênh Youtube chính thức của cộng đồng viết với tên gọi thân thương 'Động Nhện' - địa bàn hoạt động của gần 200.000 thành viên...",
+    "Vẫn là Huấn luyện viên Online, nhưng ở đây chúng tôi chỉ làm video về những đội bóng/cầu thủ xưa cũ.",
+    "Chia sẻ kiến thức lập trình, kinh nghiệm đi làm thực tế cho anh em developer.",
+    "Review công nghệ, đánh giá laptop, điện thoại và các thiết bị điện tử mới nhất trên thị trường."
+  ];
+
+  // Xáo trộn mảng tên để lấy không bị trùng lặp
+  const shuffledNames = [...names].sort(() => 0.5 - Math.random());
+
+  return Array.from({ length: Math.min(count, names.length) }, (_, i) => {
+    const name = shuffledNames[i];
+    // Tự động tạo handle không dấu, viết liền
+    const handle = "@" + name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "").toLowerCase();
+    
+    return {
+      id: i + 1,
+      name: name,
+      handle: handle,
+      subscribers: (Math.random() * 100).toFixed(1) + (Math.random() > 0.5 ? " N" : " Tr") + " người đăng ký",
+      description: descriptions[Math.floor(Math.random() * descriptions.length)],
+      avatar: avatars[Math.floor(Math.random() * avatars.length)],
+      verified: Math.random() > 0.4, // 60% khả năng có tích xác minh
+      isSubscribed: true, // Trạng thái mặc định ban đầu
+    };
+  });
+};
 
 const avatarClass = {
   person: "bg-[#e8ebf5] text-[#6f7782]",
@@ -71,8 +53,7 @@ const avatarClass = {
 };
 
 function ChannelAvatar({ channel }) {
-  const baseClass =
-    "flex size-[84px] shrink-0 items-center justify-center rounded-full max-md:size-[68px]";
+  const baseClass = "flex size-[84px] shrink-0 items-center justify-center rounded-full max-md:size-[68px]";
 
   if (channel.avatar === "football") {
     return (
@@ -102,6 +83,18 @@ function ChannelAvatar({ channel }) {
 }
 
 export default function SubscribedChannelsPage({ activeItem = "subscriptions", onNavigate }) {
+  // Khởi tạo 8 kênh ngẫu nhiên duy nhất
+  const [channels, setChannels] = useState(() => generateUniqueChannels(8));
+
+  // Hàm đảo ngược trạng thái theo dõi
+  const toggleSubscribe = (id) => {
+    setChannels((currentChannels) =>
+      currentChannels.map((channel) =>
+        channel.id === id ? { ...channel, isSubscribed: !channel.isSubscribed } : channel
+      )
+    );
+  };
+
   return (
     <div className="min-h-screen bg-[#1f1f1f] text-[#f4f4f4]">
       <Sidebar activeItem={activeItem} onNavigate={onNavigate} />
@@ -114,9 +107,9 @@ export default function SubscribedChannelsPage({ activeItem = "subscriptions", o
           </h1>
 
           <div>
-            {subscribedChannels.map((channel) => (
+            {channels.map((channel) => (
               <article
-                key={`${channel.name}-${channel.id}`}
+                key={channel.id}
                 className="grid min-h-[126px] grid-cols-[84px_minmax(0,1fr)_150px] items-center gap-7 border-b border-[#303030] py-[18px] max-md:grid-cols-[68px_minmax(0,1fr)] max-md:gap-4"
               >
                 <button
@@ -154,10 +147,15 @@ export default function SubscribedChannelsPage({ activeItem = "subscriptions", o
 
                 <button
                   type="button"
-                  className="justify-self-end rounded-full border border-[#494949] bg-transparent px-5 py-2 text-[13px] font-semibold text-[#e7e7e7] hover:border-[#666] hover:bg-[#2b2b2b] hover:text-white max-md:col-start-2 max-md:justify-self-start"
-                  aria-label={`Đang theo dõi ${channel.name}`}
+                  onClick={() => toggleSubscribe(channel.id)}
+                  className={`justify-self-end rounded-full px-5 py-2 text-[13px] font-semibold transition max-md:col-start-2 max-md:justify-self-start ${
+                    channel.isSubscribed
+                      ? "border border-[#494949] bg-transparent text-[#e7e7e7] hover:border-[#666] hover:bg-[#2b2b2b] hover:text-white"
+                      : "border-0 bg-[#f4f4f4] text-[#111111] hover:bg-[#dedede]"
+                  }`}
+                  aria-label={`${channel.isSubscribed ? "Hủy theo dõi" : "Theo dõi"} ${channel.name}`}
                 >
-                  Đang theo dõi
+                  {channel.isSubscribed ? "Đang theo dõi" : "Theo dõi"}
                 </button>
               </article>
             ))}
