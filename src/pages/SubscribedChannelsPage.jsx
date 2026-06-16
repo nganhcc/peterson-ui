@@ -3,7 +3,6 @@ import { BadgeCheck, Gamepad2, Radio, Trophy, UserCircle } from "lucide-react";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 
-// Hàm sinh dữ liệu kênh ngẫu nhiên và duy nhất
 const generateUniqueChannels = (count) => {
   const names = [
     "PeterSon", "TUI TÊN SƠN", "Cúp Học Xem Bóng", "Spiderum", 
@@ -13,7 +12,6 @@ const generateUniqueChannels = (count) => {
   ];
   
   const avatars = ["person", "football", "dark", "game"];
-  
   const descriptions = [
     "Tôi tập bắn súng Roblox cho mọi người đã theo dõi và ủng hộ! Follow các social khác tại đây...",
     "Kênh livestream chơi game và chém gió...",
@@ -24,12 +22,10 @@ const generateUniqueChannels = (count) => {
     "Review công nghệ, đánh giá laptop, điện thoại và các thiết bị điện tử mới nhất trên thị trường."
   ];
 
-  // Xáo trộn mảng tên để lấy không bị trùng lặp
   const shuffledNames = [...names].sort(() => 0.5 - Math.random());
 
   return Array.from({ length: Math.min(count, names.length) }, (_, i) => {
     const name = shuffledNames[i];
-    // Tự động tạo handle không dấu, viết liền
     const handle = "@" + name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "").toLowerCase();
     
     return {
@@ -39,8 +35,8 @@ const generateUniqueChannels = (count) => {
       subscribers: (Math.random() * 100).toFixed(1) + (Math.random() > 0.5 ? " N" : " Tr") + " người đăng ký",
       description: descriptions[Math.floor(Math.random() * descriptions.length)],
       avatar: avatars[Math.floor(Math.random() * avatars.length)],
-      verified: Math.random() > 0.4, // 60% khả năng có tích xác minh
-      isSubscribed: true, // Trạng thái mặc định ban đầu
+      verified: Math.random() > 0.4,
+      isSubscribed: true,
     };
   });
 };
@@ -54,39 +50,15 @@ const avatarClass = {
 
 function ChannelAvatar({ channel }) {
   const baseClass = "flex size-[84px] shrink-0 items-center justify-center rounded-full max-md:size-[68px]";
-
-  if (channel.avatar === "football") {
-    return (
-      <span className={`${baseClass} ${avatarClass[channel.avatar]}`} aria-hidden="true">
-        <Trophy size={31} strokeWidth={1.8} />
-      </span>
-    );
-  }
-
-  if (channel.avatar === "dark") {
-    return (
-      <span className={`${baseClass} ${avatarClass[channel.avatar]}`} aria-hidden="true">
-        <Radio size={32} strokeWidth={1.4} />
-      </span>
-    );
-  }
-
-  if (channel.avatar === "game") {
-    return (
-      <span className={`${baseClass} ${avatarClass[channel.avatar]}`} aria-hidden="true">
-        <Gamepad2 size={32} strokeWidth={1.6} />
-      </span>
-    );
-  }
-
-  return <UserCircle className={`${baseClass} ${avatarClass[channel.avatar]}`} strokeWidth={1.4} aria-hidden="true" />;
+  if (channel.avatar === "football") return <span className={`${baseClass} ${avatarClass[channel.avatar]}`}><Trophy size={31} strokeWidth={1.8} /></span>;
+  if (channel.avatar === "dark") return <span className={`${baseClass} ${avatarClass[channel.avatar]}`}><Radio size={32} strokeWidth={1.4} /></span>;
+  if (channel.avatar === "game") return <span className={`${baseClass} ${avatarClass[channel.avatar]}`}><Gamepad2 size={32} strokeWidth={1.6} /></span>;
+  return <UserCircle className={`${baseClass} ${avatarClass[channel.avatar]}`} strokeWidth={1.4} />;
 }
 
 export default function SubscribedChannelsPage({ activeItem = "subscriptions", onNavigate }) {
-  // Khởi tạo 8 kênh ngẫu nhiên duy nhất
   const [channels, setChannels] = useState(() => generateUniqueChannels(8));
 
-  // Hàm đảo ngược trạng thái theo dõi
   const toggleSubscribe = (id) => {
     setChannels((currentChannels) =>
       currentChannels.map((channel) =>
@@ -112,33 +84,31 @@ export default function SubscribedChannelsPage({ activeItem = "subscriptions", o
                 key={channel.id}
                 className="grid min-h-[126px] grid-cols-[84px_minmax(0,1fr)_150px] items-center gap-7 border-b border-[#303030] py-[18px] max-md:grid-cols-[68px_minmax(0,1fr)] max-md:gap-4"
               >
+                {/* TRUYỀN channel VÀO HÀM onNavigate */}
                 <button
                   type="button"
                   className="rounded-full border-0 bg-transparent p-0"
-                  onClick={() => onNavigate?.("profile")}
-                  aria-label={`Mở hồ sơ kênh ${channel.name}`}
+                  onClick={() => onNavigate?.("guestProfile", channel)}
                 >
                   <ChannelAvatar channel={channel} />
                 </button>
 
+                {/* TRUYỀN channel VÀO HÀM onNavigate */}
                 <button
                   type="button"
                   className="min-w-0 border-0 bg-transparent p-0 text-left"
-                  onClick={() => onNavigate?.("profile")}
-                  aria-label={`Mở hồ sơ kênh ${channel.name}`}
+                  onClick={() => onNavigate?.("guestProfile", channel)}
                 >
                   <span className="flex min-w-0 items-center gap-1.5">
                     <span className="truncate text-base font-extrabold text-[#f2f2f2] hover:text-white">
                       {channel.name}
                     </span>
                     {channel.verified ? (
-                      <BadgeCheck size={15} className="shrink-0 text-[#9aa0a6]" fill="#9aa0a6" stroke="#1f1f1f" aria-label="Đã xác minh" />
+                      <BadgeCheck size={15} className="shrink-0 text-[#9aa0a6]" fill="#9aa0a6" stroke="#1f1f1f" />
                     ) : null}
                   </span>
                   <span className="mt-1 block truncate text-[13px] text-[#b8b8b8]">
-                    {channel.handle}
-                    <span className="px-2 text-[#8f8f8f]">•</span>
-                    {channel.subscribers}
+                    {channel.handle} <span className="px-2 text-[#8f8f8f]">•</span> {channel.subscribers}
                   </span>
                   <span className="mt-2 block line-clamp-2 text-[13px] leading-relaxed text-[#9f9f9f]">
                     {channel.description}
@@ -153,7 +123,6 @@ export default function SubscribedChannelsPage({ activeItem = "subscriptions", o
                       ? "border border-[#494949] bg-transparent text-[#e7e7e7] hover:border-[#666] hover:bg-[#2b2b2b] hover:text-white"
                       : "border-0 bg-[#f4f4f4] text-[#111111] hover:bg-[#dedede]"
                   }`}
-                  aria-label={`${channel.isSubscribed ? "Hủy theo dõi" : "Theo dõi"} ${channel.name}`}
                 >
                   {channel.isSubscribed ? "Đang theo dõi" : "Theo dõi"}
                 </button>
