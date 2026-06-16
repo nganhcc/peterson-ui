@@ -26,10 +26,15 @@ const menuItems = [
 export default function Sidebar({ activeItem = "manageVideos", onNavigate }) {
   return (
     <aside className="fixed top-0 left-0 z-20 h-screen w-[172px] bg-[#272727] text-[#d6d6d6] max-md:hidden">
-      <div className="flex h-[72px] items-center gap-[18px] border-b border-[#3a3a3a] pl-[30px] text-sm font-bold text-white">
+      <button
+        type="button"
+        className="flex h-[72px] w-full items-center gap-[18px] border-0 border-b border-[#3a3a3a] bg-transparent pl-[30px] text-left text-sm font-bold text-white hover:bg-[#303030]"
+        onClick={() => onNavigate?.("home")}
+        aria-label="Về trang chủ"
+      >
         <PlayCircle size={18} fill="white" />
         <span>PERTERSON</span>
-      </div>
+      </button>
 
       <nav className="flex flex-col pt-2">
         {menuItems.map((item) => {

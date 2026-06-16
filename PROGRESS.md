@@ -176,6 +176,97 @@ Interactions:
 - Comment delete opens the delete confirmation modal and removes the comment.
 - Comment like/dislike buttons toggle with YouTube-like filled/bold active states.
 
+### Subscribed Channels Page
+
+File: `src/pages/SubscribedChannelsPage.jsx`
+
+Implemented:
+
+- "Kênh đã theo dõi" page from the sidebar.
+- YouTube-like subscribed channel list.
+- Avatar, channel name, verified badge, handle, subscriber count, description, and followed button.
+
+Interactions:
+
+- Sidebar "Kênh đã theo dõi" navigates to this page.
+- Clicking a channel avatar or channel text navigates to the channel profile page.
+
+### Watch History Page
+
+File: `src/pages/WatchHistoryPage.jsx`
+
+Implemented:
+
+- "Video đã xem" page from the sidebar.
+- Watched video table/list with video thumbnail, title, channel badge, watched date, view count, comment count, and pagination footer.
+
+Interactions:
+
+- Sidebar "Video đã xem" navigates to this page.
+- Clicking a watched video thumbnail or title navigates to the shared watch video page.
+
+### Liked Videos Page
+
+File: `src/pages/LikedVideosPage.jsx`
+
+Implemented:
+
+- "Video đã thích" page from the sidebar.
+- Liked video table/list using the same visual structure as the watch history page.
+
+Interactions:
+
+- Sidebar "Video đã thích" navigates to this page.
+- Clicking a liked video thumbnail or title navigates to the shared watch video page.
+
+### Playlist Page
+
+File: `src/pages/PlaylistPage.jsx`
+
+Implemented:
+
+- "Danh sách phát" page from the sidebar.
+- Playlist table/list with cover image, title, type, visibility, updated date, video count, views, and pagination footer.
+- Lightweight placeholder pages for future playlist edit and playlist video management flows.
+
+Interactions:
+
+- Sidebar "Danh sách phát" navigates to this page.
+- "Tạo danh sách phát" opens the create playlist modal and prepends a fake playlist.
+- "Xóa" opens the delete playlist confirmation modal and removes the fake playlist on confirm.
+- "Chỉnh sửa" navigates to the edit playlist page.
+- "Xem Video" navigates to the future playlist video management placeholder page.
+
+### Edit Playlist Page
+
+File: `src/pages/EditPlaylistPage.jsx`
+
+Implemented:
+
+- Playlist edit page with a studio-like top bar and playlist side panel.
+- Detail form with required title, description, visibility, and default video order fields.
+
+Interactions:
+
+- Cancel returns to the playlist management page.
+- Save opens a success modal.
+- Clicking the "Video" item in the playlist side panel navigates to the future playlist video management placeholder page.
+
+### Playlist Video Management Page
+
+File: `src/pages/PlaylistVideosPage.jsx`
+
+Implemented:
+
+- Playlist video management page with the same studio-like top bar and playlist side panel as the edit playlist page.
+- Video table/list with thumbnail, title, channel badge, visibility, restriction, published date, view count, comment count, delete action, and pagination footer.
+
+Interactions:
+
+- Playlist "Xem Video" and the edit playlist "Video" side item navigate to this page.
+- Clicking the "Chi tiết" side item navigates back to the edit playlist page.
+- "Xóa" opens the delete video confirmation modal and removes the fake video on confirm.
+
 ### Modal Demo Page
 
 File: `src/pages/DemoModalPage.jsx`
@@ -277,10 +368,6 @@ The project context mentions additional pages/features that are not fully implem
 
 - Home page.
 - Watch video page.
-- Subscribed channels page.
-- Watch history page.
-- Liked videos page.
-- Playlist page.
 - Playlist detail page.
 - Full channel editing form behavior.
 - Real routing with React Router or another router.
