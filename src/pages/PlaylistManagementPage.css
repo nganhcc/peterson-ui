@@ -1,0 +1,289 @@
+.playlist-management-page {
+  min-height: 100vh;
+  background: #1a1a1a;
+  color: #f4f4f4;
+}
+
+.playlist-management-main {
+  min-height: 100vh;
+  margin-left: 172px;
+  padding: 90px 40px 42px;
+}
+
+/* Header */
+.playlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.playlist-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  color: #f7f7f7;
+}
+
+.btn-create-playlist {
+  background-color: #fff;
+  color: #000;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-create-playlist:hover {
+  background-color: #e0e0e0;
+}
+
+/* Bảng */
+.playlist-table-container {
+  overflow-x: auto;
+  border-radius: 16px;
+  background-color: #2a2a2a;
+}
+
+.playlist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.playlist-table thead {
+  background-color: #2a2a2a;
+}
+
+.playlist-table th {
+  padding: 18px 20px;
+  text-align: left;
+  font-weight: 500;
+  color: #999;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.playlist-table td {
+  padding: 16px 20px;
+  border-top: 1px solid #3a3a3a;
+  vertical-align: middle;
+  color: #ddd;
+}
+
+.playlist-table tbody tr:hover {
+  background-color: #333;
+}
+
+/* Cột danh sách phát */
+.playlist-name-cell {
+  padding-right: 12px;
+}
+
+.playlist-name-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.playlist-name-content img {
+  width: 140px;
+  height: 80px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.playlist-info h4 {
+  margin: 0 0 2px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.playlist-info span {
+  font-size: 13px;
+  color: #999;
+}
+
+/* Action buttons inline */
+.playlist-actions-inline {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.action-btn-inline {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.edit-btn-inline {
+  background-color: #444;
+  color: #fff;
+}
+
+.edit-btn-inline:hover {
+  background-color: #555;
+}
+
+.view-btn-inline {
+  background-color: #444;
+  color: #fff;
+}
+
+.view-btn-inline:hover {
+  background-color: #555;
+}
+
+.delete-btn-inline {
+  background-color: #444;
+  color: #fff;
+}
+
+.delete-btn-inline:hover {
+  background-color: #555;
+}
+
+/* Visibility select style */
+.visibility-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ddd;
+  font-size: 14px;
+}
+
+.dropdown-arrow {
+  font-size: 12px;
+  color: #999;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  font-size: 14px;
+  color: #b3b3b3;
+}
+
+.pagination-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagination-select {
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+
+.pagination-select option {
+  background-color: #2a2a2a;
+  color: #fff;
+}
+
+.pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.pagination-range {
+  color: #b3b3b3;
+  font-size: 14px;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.pagination-btn {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #b3b3b3;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .playlist-table {
+    font-size: 12px;
+  }
+
+  .playlist-table th,
+  .playlist-table td {
+    padding: 12px;
+  }
+
+  .playlist-name-content img {
+    width: 110px;
+    height: 62px;
+  }
+}
+
+@media (max-width: 720px) {
+  .playlist-management-main {
+    margin-left: 0;
+    padding: 90px 16px 32px;
+  }
+
+  .playlist-header h1 {
+    font-size: 24px;
+  }
+
+  .playlist-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .btn-create-playlist {
+    width: 100%;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .pagination-right {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

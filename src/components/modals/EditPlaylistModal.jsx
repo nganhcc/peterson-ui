@@ -1,9 +1,8 @@
 import { useState } from "react";
 
-export default function CreatePlaylistModal({ onClose, onSubmit }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [visibility, setVisibility] = useState("Riêng tư");
+export default function EditPlaylistModal({ playlist, onClose, onSubmit }) {
+  const [title, setTitle] = useState(playlist?.title || "");
+  const [visibility, setVisibility] = useState(playlist?.visibility || "Riêng tư");
 
   function handleOverlayMouseDown(event) {
     if (event.target === event.currentTarget) {
@@ -13,36 +12,25 @@ export default function CreatePlaylistModal({ onClose, onSubmit }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (!title.trim()) return;
-    onSubmit?.({ title: title.trim(), description: description.trim(), visibility });
-    setTitle("");
-    setDescription("");
-    setVisibility("Riêng tư");
+    onSubmit?.({ title, visibility });
   }
 
   return (
     <div className="modal-overlay playlist-create-overlay" onMouseDown={handleOverlayMouseDown}>
       <form className="playlist-create-panel" onSubmit={handleSubmit}>
-        <h3>Danh sách phát mới</h3>
+        <h3>Sửa danh sách phát</h3>
 
         <input
           type="text"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="chọn một tiêu đề"
+          placeholder="Tiêu đề danh sách phát"
           aria-label="Tiêu đề danh sách phát"
         />
 
-        <textarea
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-          placeholder="nhập mô tả"
-          aria-label="Mô tả danh sách phát"
-        />
-
-        <label htmlFor="playlist-visibility">Chế độ hiển thị</label>
+        <label htmlFor="edit-playlist-visibility">Chế độ hiển thị</label>
         <select
-          id="playlist-visibility"
+          id="edit-playlist-visibility"
           value={visibility}
           onChange={(event) => setVisibility(event.target.value)}
         >
@@ -55,7 +43,7 @@ export default function CreatePlaylistModal({ onClose, onSubmit }) {
             Hủy
           </button>
           <button type="submit" className="playlist-light-button">
-            Tạo
+            Lưu
           </button>
         </div>
       </form>

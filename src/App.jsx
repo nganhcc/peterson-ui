@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ChannelProfilePage from "./pages/ChannelProfilePage";
 import EditVideoPage from "./pages/EditVideoPage";
+import PlaylistManagementPage from "./pages/PlaylistManagementPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import UploadVideoPage from "./pages/UploadVideoPage";
 import VideoManagementPage from "./pages/VideoManagementPage";
@@ -9,7 +10,7 @@ export default function App() {
   const [page, setPage] = useState("manageVideos");
 
   function handleNavigate(nextPage) {
-    if (["profile", "statistics", "manageVideos", "uploadVideo", "editVideo"].includes(nextPage)) {
+    if (["profile", "statistics", "manageVideos", "uploadVideo", "editVideo", "playlists"].includes(nextPage)) {
       setPage(nextPage);
     }
   }
@@ -20,6 +21,10 @@ export default function App() {
 
   if (page === "statistics") {
     return <StatisticsPage activeItem={page} onNavigate={handleNavigate} />;
+  }
+
+  if (page === "playlists") {
+    return <PlaylistManagementPage activeItem={page} onNavigate={handleNavigate} />;
   }
 
   if (page === "uploadVideo") {
